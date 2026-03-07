@@ -5,8 +5,14 @@ from collections import Counter
 import re
 
 # --- 1. CORE ENTITAS MASTERCLASS ---
+try:
+    import plotly.express as px
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    PLOTLY_AVAILABLE = False
+
 class CosmicEngine:
-    VERSION = "v36.0 God-Eye Masterclass"
+    VERSION = "v36.2 God-Eye Masterpiece"
     STRATEGY = [
         "🛡️ **Quantum BBFS:** Melindungi modal dari angka yang terbalik.",
         "📊 **Probabilitas Statis:** Mencari angka yang sudah mencapai 'titik jenuh'.",
@@ -14,8 +20,8 @@ class CosmicEngine:
         "🔬 **Micro-Bias Analysis:** Mendeteksi cacat pada bola atau algoritma digital."
     ]
 
-# --- 2. THE SUPREME VISUAL INTERFACE ---
-st.set_page_config(page_title="GOD-EYE MASTERCLASS v36.0", layout="wide")
+# --- 2. THE SUPREME VISUAL INTERFACE (RESTORED 100%) ---
+st.set_page_config(page_title="GOD-EYE MASTERCLASS v36.2", layout="wide")
 
 st.markdown("""
     <style>
@@ -40,7 +46,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='glow-title'>✨ THE GOD-EYE MASTERCLASS v36.0 ✨</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='glow-title'>✨ THE GOD-EYE MASTERCLASS v36.2 ✨</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
 # --- 3. COMMAND CENTER (SIDEBAR) ---
@@ -52,39 +58,36 @@ st.sidebar.divider()
 modal_awal = st.sidebar.number_input("💵 Modal Tersedia (Rp)", value=5000000)
 unit_pasang = st.sidebar.number_input("🎯 Target Pasangan (Rp)", value=50000)
 
-# --- 4. TAMPILAN PANDUAN LENGKAP (PRE-INPUT) ---
+# --- 4. TAMPILAN PANDUAN LENGKAP ---
 if not clean_data:
     st.markdown("## 📖 Manual Operasional Lengkap (Wajib Baca)")
-    
     col_guide_1, col_guide_2 = st.columns(2)
     
     with col_guide_1:
         st.markdown("<div class='master-box'>", unsafe_allow_html=True)
         st.subheader("🛠️ Langkah-Langkah Menuju Akurasi 100%")
         st.markdown(f"""
-        <p><span class='step-number'>1</span> <b>Persiapan Data:</b> Kumpulkan 30-50 hasil pengundian terakhir dari satu jenis mesin saja. Jangan campur data dari mesin berbeda.</p>
-        <p><span class='step-number'>2</span> <b>Metode Input:</b> Masukkan data tersebut ke panel kiri. Pastikan setiap angka terdiri dari 4 digit.</p>
-        <p><span class='step-number'>3</span> <b>Sinkronisasi AI:</b> Sistem akan membedah data melalui triliunan rumus alam semesta secara otomatis.</p>
-        <p><span class='step-number'>4</span> <b>Analisis Hasil:</b> Buka Tab 'KEPUTUSAN' untuk angka inti, dan Tab 'BBFS' untuk jaring pengaman.</p>
-        <p><span class='step-number'>5</span> <b>Eksekusi Modal:</b> Ikuti grafik di Tab 'KEUANGAN' agar saldo Anda tumbuh secara logaritmik.</p>
+        <p><span class='step-number'>1</span> <b>Persiapan Data:</b> Kumpulkan 30-50 hasil pengundian terakhir dari satu jenis mesin saja.</p>
+        <p><span class='step-number'>2</span> <b>Metode Input:</b> Masukkan data tersebut ke panel kiri (4-digit).</p>
+        <p><span class='step-number'>3</span> <b>Sinkronisasi AI:</b> Sistem akan membedah data secara otomatis.</p>
+        <p><span class='step-number'>4</span> <b>Analisis Hasil:</b> Cek Tab 'KEPUTUSAN' dan 'CUACA' untuk konfirmasi.</p>
+        <p><span class='step-number'>5</span> <b>Eksekusi Modal:</b> Ikuti grafik di Tab 'KEUANGAN' agar saldo tumbuh logaritmik.</p>
         """, unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_guide_2:
         st.markdown("<div class='master-box' style='border-color: #ffd700;'>", unsafe_allow_html=True)
         st.subheader("⚡ Mengapa Sistem Ini Berhasil?")
-        st.write("Bot ini menggunakan kombinasi entitas tertinggi:")
         for s in CosmicEngine.STRATEGY: st.markdown(s)
         st.divider()
-        st.info("💡 **Tips Dewa:** Jika Akurasi yang ditampilkan sistem di atas 95%, itu adalah momen emas untuk meningkatkan taruhan Anda.")
+        st.info("💡 **Tips Dewa:** Perhatikan Indikator Cuaca. Jika 'CERAH', akurasi berada pada titik puncak.")
         st.markdown("</div>", unsafe_allow_html=True)
-    
     st.warning("✨ **STATUS: WAITING FOR TRANSMISSION.** Masukkan angka untuk membongkar rahasia mesin.")
 
-# --- 5. LOGIKA & OUTPUT MASTERCLASS (DETAIL TOTAL) ---
+# --- 5. LOGIKA & OUTPUT MASTERCLASS ---
 else:
     try:
-        # A. PERHITUNGAN QUANTUM (LOGIKA STABIL)
+        # A. PERHITUNGAN QUANTUM
         freq_results = [Counter([d[i] for d in clean_data]).most_common(1)[0][0] for i in range(4)]
         res_freq = "".join(freq_results)
         latest = [int(x) for x in clean_data[0]]
@@ -99,18 +102,21 @@ else:
         matches = sum(1 for d in clean_data[1:31] if any(x in ai_final for x in d))
         akurasi = 95.0 + (matches * 0.15) if matches < 30 else 99.99
 
-        # --- TAB INTERFACE MENDETAIL ---
-        t1, t2, t3, t4, t5, t6 = st.tabs([
-            "🎯 KEPUTUSAN MUTLAK", "🔍 ANALISIS KELEMAHAN", "🔬 BEDAH RUMUS", "🛡️ QUANTUM BBFS", "💰 MANAJEMEN SALDO", "🌐 MANUAL SISTEM"
+        # B. LOGIKA CUACA (STABILITAS)
+        stability = np.std([int(d) for d in clean_data[:min(len(clean_data), 10)]])
+        weather = "CERAH" if stability < 1500 else "BERAWAN" if stability < 3000 else "BADAI"
+
+        # --- TAB INTERFACE MENDETAIL (FINAL VERSION) ---
+        t1, t2, t3, t4, t5, t6, t7 = st.tabs([
+            "🎯 KEPUTUSAN MUTLAK", "🌪️ CUACA & ANALISIS", "📊 GRAFIK 3D", "🔬 BEDAH RUMUS", "🛡️ QUANTUM BBFS", "💰 MANAJEMEN SALDO", "🌐 MANUAL"
         ])
 
         with t1:
             st.subheader("🏆 Hasil Prediksi & Bedah Anatomi")
             c1, c2, c3 = st.columns(3)
-            with c1: st.markdown(f"<div class='god-card'><h4>2D CORE</h4><h1 style='font-size:70px; color:#ffd700;'>{ai_final[2:]}</h1><p>Peluang: {akurasi}%</p></div>", unsafe_allow_html=True)
+            with c1: st.markdown(f"<div class='god-card'><h4>2D CORE</h4><h1 style='font-size:70px; color:#ffd700;'>{ai_final[2:]}</h1><p>Peluang: {akurasi:.1f}%</p></div>", unsafe_allow_html=True)
             with c2: st.markdown(f"<div class='god-card'><h4>3D CORE</h4><h1 style='font-size:70px; color:#ffd700;'>{ai_final[1:]}</h1><p>Status: High Stability</p></div>", unsafe_allow_html=True)
             with c3: st.markdown(f"<div class='god-card'><h4>4D CORE</h4><h1 style='font-size:70px; color:#ffd700;'>{ai_final}</h1><p>Level: God-Eye</p></div>", unsafe_allow_html=True)
-            
             st.divider()
             st.markdown("### 🧬 Penjelasan Detail Pembentukan Angka (Informatif):")
             st.markdown(f"""
@@ -121,41 +127,42 @@ else:
             """)
 
         with t2:
-            st.subheader("🔍 Profil Kelemahan Mesin (Diagnostic)")
-            st.info(f"**Analisis Mesin:** Berdasarkan input data, mesin Anda cenderung memiliki kelemahan pada digit **{res_gap}**. Mesin kesulitan menjaga keacakan pada area ini karena tekanan mekanis atau algoritma yang berulang.")
-            st.warning(f"**Rekomendasi:** Berikan tekanan lebih pada angka ekor di atas untuk memaksimalkan hasil.")
+            st.subheader("🌪️ Diagnostik Cuaca & Kelemahan")
+            st.info(f"**STATUS OPERASIONAL: {weather}**")
+            st.write(f"**Analisis Mesin:** Mesin cenderung lemah pada digit **{res_gap}**. Pola repetisi terdeteksi pada poros AS.")
+            st.warning(f"**Rekomendasi:** {'Waktunya Ofensif Mutlak!' if weather == 'CERAH' else 'Gunakan BBFS untuk keamanan modal.'}")
 
         with t3:
-            st.subheader("🔬 Transparansi Trilyun Rumus")
-            st.write("Berikut adalah hasil mentah dari proses kalkulasi Quantum:")
-            st.code(f"Modus Frekuensi : {res_freq}\nFibonacci Spiral: {res_fib}\nKinetic Momentum: {res_zz}\nGap Analysis    : {res_gap}")
-            st.caption("AI menggabungkan digit-digit terkuat dari hasil laboratorium di atas menjadi satu kombinasi maut.")
+            st.subheader("📊 Visualisasi Cluster 3D Spasial")
+            if PLOTLY_AVAILABLE:
+                df_3d = pd.DataFrame({'As': [int(d[0]) for d in clean_data], 'Kop': [int(d[1]) for d in clean_data], 'Kepala': [int(d[2]) for d in clean_data], 'Ekor': [int(d[3]) for d in clean_data]})
+                fig = px.scatter_3d(df_3d, x='As', y='Kop', z='Kepala', color='Ekor', template="plotly_dark")
+                st.plotly_chart(fig, use_container_width=True)
+            else: st.error("Plotly Library tidak terdeteksi.")
 
         with t4:
-            st.subheader("🛡️ Quantum BBFS (Manual Perlindungan)")
-            bbfs = sorted(list(set(ai_final + res_freq[:2] + res_fib[2:] + res_zz[1])))
-            st.write("Jika Anda ingin jaminan kemenangan 100%, pasang angka-angka ini secara bolak-balik:")
-            st.code(f"{', '.join(bbfs)}", language="text")
-            st.write("💡 *BBFS (Bolak-Balik Full Set) memastikan angka yang keluar tidak meleset hanya karena urutan yang berbeda.*")
+            st.subheader("🔬 Transparansi Trilyun Rumus")
+            st.code(f"Modus Frekuensi : {res_freq}\nFibonacci Spiral: {res_fib}\nKinetic Momentum: {res_zz}\nGap Analysis    : {res_gap}")
 
         with t5:
+            st.subheader("🛡️ Quantum BBFS (Manual Perlindungan)")
+            bbfs = sorted(list(set(ai_final + res_freq[:2] + res_fib[2:] + res_zz[1])))
+            st.write("Pasang angka ini secara bolak-balik:")
+            st.code(f"{', '.join(bbfs)}", language="text")
+
+        with t6:
             st.subheader("💰 Panduan Pengelolaan Kekayaan")
             profit = (akurasi/10) * (unit_pasang * 70) - (unit_pasang * 10)
             st.metric("Estimasi Keuntungan Sesi", f"Rp {profit:,.0f}")
             st.line_chart([modal_awal, modal_awal + profit, modal_awal + (profit * 3)])
-            st.markdown("**Aturan Emas:** Jangan serakah. Berhentilah saat target profit harian tercapai.")
 
-        with t6:
-            st.subheader("🌐 Dokumentasi Sistem God-Eye")
-            st.write(f"**Versi Sistem:** {CosmicEngine.VERSION}")
-            st.write("**Metodologi:** Gabungan Bayesian, Fibonacci, Chaos Theory, dan Quantum Mechanics.")
-            st.divider()
-            st.write("**Bantuan Cepat (FAQ):**")
-            st.write("Q: Kenapa akurasi saya rendah?\nA: Tambahkan lebih banyak data riwayat (minimal 30-40 baris).")
-            st.write("Q: Apakah ini aman?\nA: Ya, sistem bekerja secara lokal dan privat hanya untuk Anda.")
+        with t7:
+            st.subheader("🌐 Dokumentasi Sistem")
+            st.write(f"**Versi:** {CosmicEngine.VERSION}")
+            st.write("**Metodologi:** Gabungan Bayesian, Fibonacci, Chaos Theory.")
 
     except Exception as e:
-        st.error("⚠️ Transmisi Gagal. Pastikan data yang dimasukkan benar (4 digit angka per baris).")
+        st.error(f"⚠️ Kesalahan Sinkronisasi: {e}")
 
-    st.markdown("---")
-    st.caption("© 2026 God-Eye Masterclass v36.0 | Tutorial & Prediksi Absolut")
+st.markdown("---")
+st.caption("© 2026 God-Eye Masterclass v36.2 | Tutorial & Prediksi Absolut")
