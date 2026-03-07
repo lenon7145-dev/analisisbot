@@ -2,129 +2,115 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from collections import Counter
-import datetime
 
-# --- SISTEM KONFIGURASI (Audit: WiFi, Sosmed, Maps, FAQ v8.9 - TETAP TERJAGA) ---
+# --- SISTEM KONFIGURASI (Audit: WiFi, Sosmed, Maps, FAQ v9.0) ---
 class SystemInfo:
-    WIFI = "📶 FREE_HIGH_SPEED_WIFI_2026_V8.9_SOVEREIGN"
-    SOCIAL = ["@Analyst_AI", "@Sovereign_Dev"]
+    WIFI = "📶 FREE_WIFI_2026_V9.0_INDONESIA"
+    SOCIAL = ["@Analyst_AI", "@Pakar_Angka"]
     MAPS = "http://google.com/maps"
     FAQ = [
-        "1. Apa itu Confidence Score? Persentase keyakinan bot terhadap angka prediksi (v8.9).",
-        "2. Apa itu Anomaly Detector? Fitur untuk menangkap angka 'aneh' yang sering keluar tiba-tiba.",
-        "3. Day-Cycle Analysis? Menyesuaikan hitungan berdasarkan karakteristik hari saat ini.",
-        "4. Akses WiFi & Maps? Tersedia gratis di Tab System Info untuk kelancaran update.",
-        "5. Tip Jitu: Jika Confidence Score di atas 80%, pola sedang sangat stabil."
+        "1. Skor Keyakinan? Menunjukkan seberapa kompak semua rumus setuju pada angka tersebut.",
+        "2. Apa itu Angka Bayangan? Angka lawan (Mistik/Index) yang sering muncul bergantian.",
+        "3. Apa itu Angka Sembunyi? Angka yang sudah lama tidak keluar dan berpotensi muncul.",
+        "4. Cara Pakai? Masukkan hasil terakhir di kotak kiri, lalu baca penjelasan di tiap tab.",
+        "5. Tip: Perhatikan 'Angka Kuat' di Tab Analisis Detail untuk pasangan 2D."
     ]
 
 # --- UI SETTINGS ---
-st.set_page_config(page_title="Ultimate Sovereign Bot v8.9", layout="wide")
-st.title("👑 Ultimate Analyst Bot v8.9")
-st.caption("Sovereign Edition: Confidence Score + Anomaly Detector + Day-Cycle Analysis")
+st.set_page_config(page_title="Pakar Angka v9.0", layout="wide")
+st.title("🤖 Pakar Angka v9.0 (Edisi Penjelasan Detail)")
+st.caption("Versi Bahasa Indonesia: Lebih Mudah Dimengerti & Transparan")
 st.markdown("---")
 
 # --- SIDEBAR INPUT ---
-st.sidebar.header("📥 Data Source")
-hari_ini = st.sidebar.selectbox("Pilih Hari Analisis:", ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"])
-raw_input = st.sidebar.text_area("Input Histori (Terbaru di atas):", height=250, placeholder="6395\n7554")
+st.sidebar.header("📥 Masukkan Data")
+raw_input = st.sidebar.text_area("Tempel Histori (Angka terbaru di paling atas):", height=250, placeholder="Contoh:\n6395\n7554")
 data_4d = [x.strip() for x in raw_input.split('\n') if len(x.strip()) == 4 and x.strip().isdigit()]
 
-# Tabel Dasar & Logic
+# Tabel Dasar Penjelas
 index_map = {'0':'5', '1':'6', '2':'7', '3':'8', '4':'9', '5':'0', '6':'1', '7':'2', '8':'3', '9':'4'}
-echo_map = {'6':'1', '1':'6', '8':'3', '3':'8', '0':'5', '5':'0', '2':'7', '7':'2', '4':'9', '9':'4'}
+mistik_map = {'1':'0', '2':'5', '3':'8', '4':'7', '6':'9', '0':'1', '5':'2', '8':'3', '7':'4', '9':'6'}
 
 if data_4d:
-    # --- 1. ENGINE: DAY-CYCLE ANALYSIS (v8.9) ---
-    # Logika: Hari tertentu cenderung mengeluarkan angka ganjil/genap atau besar/kecil
-    is_weekend = hari_ini in ["Sabtu", "Minggu"]
+    # --- 1. PROSES RUMUS 1: FREKUENSI (Angka Paling Sering) ---
+    res_frequent = "".join([Counter([d[i] for d in data_4d]).most_common(1)[0][0] for i in range(4)])
     
-    # --- 2. ENGINE: ANOMALY DETECTOR (v8.9) ---
-    # Menghitung angka yang paling jarang muncul di 20 data terakhir (angka kejutan)
-    all_long_term = "".join(data_4d[:20])
-    anomaly_digit = Counter(all_long_term).most_common()[-1][0]
-
-    # --- 3. ENGINE: GAP & STATISTIK (v8.4) ---
-    res_stat = "".join([Counter([d[i] for d in data_4d]).most_common(1)[0][0] for i in range(4)])
-    all_recent = "".join(data_4d[:7])
+    # --- 2. PROSES RUMUS 2: GAP (Angka Sembunyi) ---
+    all_recent = "".join(data_4d[:8])
     missing = [str(i) for i in range(10) if str(i) not in all_recent]
-    res_gap_digit = missing[0] if missing else data_4d[0][0]
+    res_sembunyi = missing[0] if missing else data_4d[0][0]
 
-    # --- 4. ENGINE: ECHO & FLOW (v8.8) ---
-    latest = data_4d[0]
-    res_echo = f"{echo_map.get(latest[0], '0')}{echo_map.get(latest[1], '0')}"
-    flow_pool = [d[1] for d in data_4d[:3]] + [d[2] for d in data_4d[:3]]
-    res_flow = Counter(flow_pool).most_common(1)[0][0]
+    # --- 3. PROSES RUMUS 3: BAYANGAN (Index/Mistik) ---
+    terbaru = data_4d[0]
+    res_bayangan = "".join([index_map.get(x, x) for x in terbaru])
 
-    # --- 5. ENGINE: ZIGZAG MASTER (v8.5) ---
-    n = [int(x) for x in latest]
+    # --- 4. PROSES RUMUS 4: ZIGZAG (Pola Loncat) ---
+    n = [int(x) for x in terbaru]
     zigzag_rows = [[(n[0]-i)%10, (n[1]-i)%10, (n[2]+i)%10, (n[3]+i)%10] for i in range(6)]
     res_zigzag = f"{zigzag_rows[2][0]}{zigzag_rows[1][1]}{zigzag_rows[3][2]}{zigzag_rows[5][3]}"
 
-    # --- 6. CONSENSUS & CONFIDENCE SCORE (v8.9) ---
-    res_final_list = []
-    engines = [res_stat, res_zigzag, f"{res_echo}{res_flow}{res_gap_digit}", "".join([index_map.get(x, x) for x in latest])]
+    # --- 5. KONSENSUS & SKOR KEYAKINAN ---
+    final_digits = []
+    rumus_list = [res_frequent, res_zigzag, res_bayangan, f"{res_sembunyi}{res_sembunyi}{res_sembunyi}{res_sembunyi}"]
+    setuju_poin = 0
     
-    # Hitung kesamaan antar mesin untuk Score
-    agreement_count = 0
     for i in range(4):
-        pool = [eng[i] for eng in engines if len(eng)==4]
-        top_digit, count = Counter(pool).most_common(1)[0]
-        res_final_list.append(top_digit)
-        agreement_count += count
+        pool = [r[i] for r in rumus_list]
+        pemenang, jumlah = Counter(pool).most_common(1)[0]
+        final_digits.append(pemenang)
+        setuju_poin += jumlah
 
-    res_final = "".join(res_final_list)
-    conf_score = int((agreement_count / 16) * 100) # Maksimal 16 poin kesepakatan
+    hasil_akhir = "".join(final_digits)
+    skor_yakin = int((setuju_poin / 16) * 100)
 
-    # --- TAMPILAN MULTI-TAB SOVEREIGN ---
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["👑 SOVEREIGN RESULT", "🔬 ENGINE DETAILS", "📐 ZIGZAG LAB", "⚠️ ANOMALY & DAY", "🌐 SYSTEM INFO"])
+    # --- TAMPILAN UTAMA ---
+    t1, t2, t3, t4 = st.tabs(["🏆 HASIL UTAMA", "🔬 DETAIL RUMUS", "📐 TABEL ZIGZAG", "🌐 INFO SISTEM"])
 
-    with tab1:
-        st.subheader(f"🎯 Target Konsensus - Hari {hari_ini}")
-        col_main, col_score = st.columns([2,1])
-        with col_main:
-            st.metric("PREDIKSI JITU", res_final)
-        with col_score:
-            st.metric("Confidence Score", f"{conf_score}%")
-            st.progress(conf_score / 100)
+    with t1:
+        st.subheader("🎯 Prediksi Angka Terbaik")
+        c1, c2 = st.columns([2,1])
+        with c1:
+            st.metric("ANGKA JADI", hasil_akhir)
+            st.write(f"**Penjelasan Singkat:** Angka ini dipilih karena paling banyak didukung oleh rumus statistik dan pola loncat (Zigzag).")
+        with c2:
+            st.metric("Tingkat Keyakinan", f"{skor_yakin}%")
+            st.progress(skor_yakin / 100)
         
         st.divider()
-        st.write("### 🧐 Analisis Sovereign:")
-        st.write(f"- **Prediksi Utama:** {res_final}")
-        st.write(f"- **Angka Kejutan (Anomaly):** {anomaly_digit}")
-        st.write(f"- **Karakter Hari:** {'Potensi Angka Twin/Besar' if is_weekend else 'Potensi Angka Stabil'}")
+        st.subheader("💡 Saran Strategi 2D")
+        st.write(f"Pasangan angka belakang yang kuat: **{hasil_akhir[2:]}** atau cadangan **{res_bayangan[2:]}**.")
+
+    with t2:
+        st.subheader("🔬 Penjelasan Detail Setiap Rumus")
         
-    with tab2:
-        st.subheader("🔬 Detail Kinerja Setiap Mesin")
-        c1, c2, c3 = st.columns(3)
-        c1.info(f"**Statistik:**\n{res_stat}")
-        c2.info(f"**Zigzag:**\n{res_zigzag}")
-        c3.info(f"**Echo/Flow:**\n{res_echo}{res_flow}x")
-        st.write("---")
-        st.write("**Gema Angka (Echo):** Menghitung bayangan dari As terbaru.")
-        st.write("**Gap Analysis:** Mendeteksi angka yang paling lama sembunyi.")
+        st.markdown(f"""
+        1. **Rumus Frekuensi (Paling Sering): `{res_frequent}`**
+           - Cara kerja: Bot melihat dari semua histori, angka mana yang paling sering muncul di posisi AS, KOP, KEPALA, dan EKOR.
+        
+        2. **Rumus Angka Sembunyi (Gap): `{res_sembunyi}`**
+           - Cara kerja: Bot mencari angka yang sudah 'libur' atau tidak keluar dalam 8 hari terakhir. Angka **{res_sembunyi}** adalah yang paling lama sembunyi.
+        
+        3. **Rumus Bayangan (Index): `{res_bayangan}`**
+           - Cara kerja: Mengubah hasil terakhir `{terbaru}` ke angka lawannya (contoh: 0 jadi 5, 1 jadi 6). Ini sering terjadi di mesin undian.
+        
+        4. **Rumus Zigzag (Pola Loncat): `{res_zigzag}`**
+           - Cara kerja: Menghitung pergerakan naik-turun angka dari hasil terakhir.
+        """)
 
-    with tab3:
-        st.subheader("📐 Tabel Zigzag Precision")
-        st.table(pd.DataFrame(zigzag_rows, columns=["AS", "KOP", "KEP", "EKO"]))
-        st.write(f"**Pola Jalur v8.9:** {res_zigzag}")
+    with t3:
+        st.subheader("📐 Tabel Pola Loncat (Zigzag)")
+        st.table(pd.DataFrame(zigzag_rows, columns=["AS", "KOP", "KEPALA", "EKOR"]))
+        st.info("Tabel ini menunjukkan kemungkinan angka jika polanya bergeser 1-5 langkah ke depan atau ke belakang.")
 
-    with tab4:
-        st.subheader("⚠️ Detektor Anomali & Siklus Hari")
-        st.write(f"**Angka Paling Jarang Muncul (20 Hari):** `{anomaly_digit}`")
-        st.write(f"**Analisis Siklus Hari {hari_ini}:**")
-        if is_weekend:
-            st.warning("Mesin mendeteksi volatilitas tinggi karena akhir pekan. Waspadai angka kembar.")
-        else:
-            st.success("Mesin mendeteksi arus data stabil. Fokus pada Gap Analysis.")
-
-    with tab5:
-        st.write(f"**WiFi:** {SystemInfo.WIFI}")
-        st.write(f"**Maps:** [Server Location]({SystemInfo.MAPS})")
+    with t4:
+        st.write(f"**Koneksi:** {SystemInfo.WIFI}")
+        st.write(f"**Lokasi Server:** [Klik di Sini]({SystemInfo.MAPS})")
         st.divider()
-        for item in SystemInfo.FAQ: st.write(item)
+        st.write("**Tanya Jawab (FAQ):**")
+        for f in SystemInfo.FAQ: st.write(f)
 
-    # EXPORT
+    # DOWNLOAD
     csv = pd.DataFrame(data_4d).to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Log Sovereign v8.9", csv, "sentinel_v89.csv", "text/csv")
+    st.download_button("📥 Simpan Histori Saya", csv, "histori_angka.csv", "text/csv")
 else:
-    st.info("👋 Sovereign v8.9 Siap. Masukkan data histori di sidebar untuk memulai.")
+    st.info("👋 Selamat Datang! Silakan masukkan list angka Anda di kotak sebelah kiri untuk mulai menghitung.")
