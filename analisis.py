@@ -3,101 +3,119 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 
-# --- SISTEM KONFIGURASI (Tetap Sesuai Permintaan Anda) ---
+# --- SISTEM KONFIGURASI (Sesuai Instruksi Anda) ---
 class SystemInfo:
-    WIFI = "📶 FREE_HIGH_SPEED_WIFI_2026_V6"
+    WIFI = "📶 FREE_HIGH_SPEED_WIFI_2026_V8"
     SOCIAL = ["@Analyst_AI", "@Data_Mining_King"]
     MAPS = "http://googleusercontent.com/maps.google.com/6"
     FAQ = [
-        "1. Apa itu High Probability? Algoritma v6.5 yang memberi bobot lebih pada data terbaru.",
-        "2. Bagaimana cara input? Masukkan data terbaru di baris PALING ATAS.",
-        "3. Apa arti Keyakinan? Persentase kekuatan angka tersebut muncul kembali (0-99%).",
-        "4. Apakah WiFi gratis? Ya, cek tab System Info untuk detail akses."
+        "1. Apa itu God Mode? Penggabungan Statistik, Sniper, Zigzag, Mistik, dan Shio.",
+        "2. Rumus Mistik? Mengonversi angka berdasarkan pola getaran angka tradisional.",
+        "3. Cara Baca Konsensus? Hasil akhir adalah angka yang paling banyak disetujui semua rumus.",
+        "4. FAQ & Info? Cek tab System Info untuk WiFi dan Maps.",
+        "5. Strategi: Jika Angka Utama dan Zigzag sama, itu adalah sinyal KUAT."
     ]
 
 # --- UI SETTINGS ---
-st.set_page_config(page_title="Ultimate Analyst Bot v6.5", layout="centered")
-st.title("🚀 Ultimate Analyst Bot v6.5")
-st.caption("Advanced Algorithm: Weighted Trend Analysis Active")
+st.set_page_config(page_title="Ultimate Analyst Bot v8.0", layout="centered")
+st.title("🔥 Ultimate Analyst Bot v8.0")
+st.caption("God Mode: Statistical + Sniper + Zigzag + Mistik + Shio Engine")
 st.markdown("---")
 
 # --- SIDEBAR INPUT ---
 st.sidebar.header("📥 Data Source")
-st.sidebar.info("Masukkan histori 4-digit (Terbaru di paling atas):")
-raw_input = st.sidebar.text_area("Input Histori:", height=250, placeholder="Contoh:\n1234\n5678")
-
-# Membersihkan data
+raw_input = st.sidebar.text_area("Input Histori (Terbaru di atas):", height=200, placeholder="Contoh: 5436")
 data_4d = [x.strip() for x in raw_input.split('\n') if len(x.strip()) == 4 and x.strip().isdigit()]
 
-if data_4d:
-    # 1. LOGIKA UPGRADE: WEIGHTED PROBABILITY (Meningkatkan Akurasi)
-    pos_names = ["As (Pos 1)", "Kop (Pos 2)", "Kepala (Pos 3)", "Ekor (Pos 4)"]
-    best_numbers = []
-    summary_stats = []
-    pos_df_data = {}
+# --- RUMUS DASAR (MISTIK & INDEX) ---
+index_map = {'0':'5', '1':'6', '2':'7', '3':'8', '4':'9', '5':'0', '6':'1', '7':'2', '8':'3', '9':'4'}
+mistik_lama = {'1':'0', '2':'5', '3':'8', '4':'7', '6':'9', '0':'1', '5':'2', '8':'3', '7':'4', '9':'6'}
+mistik_baru = {'1':'7', '2':'6', '3':'9', '4':'5', '0':'8', '7':'1', '6':'2', '9':'3', '5':'4', '8':'0'}
 
+if data_4d:
+    # 1. RUMUS STATISTIK (TREND)
+    best_stat = []
     for i in range(4):
         weighted_data = []
-        for index, entry in enumerate(data_4d):
-            # Data teratas (index 0) diberi bobot lebih berat (Exponential Weighting)
-            weight = max(1, len(data_4d) - index)
+        for idx, entry in enumerate(data_4d):
+            weight = max(1, len(data_4d) - idx)
             weighted_data.extend([entry[i]] * weight)
-        
-        counts = Counter(weighted_data)
-        total_weighted = sum(counts.values())
-        
-        # Cari angka terbaik
-        top_num, top_count = counts.most_common(1)[0]
-        prob_val = (top_count / total_weighted) * 99
-        best_numbers.append(top_num)
-        
-        # Cek Ganjil/Genap
-        parity = "Ganjil" if int(top_num) % 2 != 0 else "Genap"
-        summary_stats.append(f"{pos_names[i]}: {top_num} ({prob_val:.1f}%) - {parity}")
-        
-        # Data untuk tabel probabilitas
-        pos_df_data[pos_names[i]] = [f"{(counts.get(str(n), 0)/total_weighted)*99:.1f}%" for n in range(10)]
+        best_stat.append(Counter(weighted_data).most_common(1)[0][0])
+    res_stat = "".join(best_stat)
+
+    # 2. RUMUS SNIPER (INDEX)
+    res_index = "".join([index_map.get(n, n) for n in best_stat])
+
+    # 3. RUMUS MISTIK (LAMA & BARU)
+    res_mistik_l = "".join([mistik_lama.get(n, n) for n in best_stat])
+    res_mistik_b = "".join([mistik_baru.get(n, n) for n in best_stat])
+
+    # 4. RUMUS ZIGZAG
+    latest = data_4d[0]
+    n = [int(x) for x in latest]
+    zigzag_rows = []
+    for i in range(6):
+        row = [(n[0]-i)%10, (n[1]-i)%10, (n[2]+i)%10, (n[3]+i)%10]
+        zigzag_rows.append(row)
+    res_zigzag = f"{zigzag_rows[1][0]}{zigzag_rows[3][1]}{zigzag_rows[4][2]}{zigzag_rows[5][3]}"
+
+    # --- KONSENSUS AKHIR (THE GOD NUMBER) ---
+    final_jitu = []
+    engines = [res_stat, res_index, res_mistik_l, res_mistik_b, res_zigzag]
+    for i in range(4):
+        pool = [engine[i] for engine in engines]
+        final_jitu.append(Counter(pool).most_common(1)[0][0])
+    res_final = "".join(final_jitu)
 
     # --- TAMPILAN UTAMA ---
-    tab1, tab2, tab3 = st.tabs(["🎯 Lucky Generator", "📊 Analysis Lab", "🌐 System Info"])
+    tab1, tab2, tab3, tab4 = st.tabs(["🎯 Hasil God Mode", "🔮 Mistik & Shio", "📐 Zigzag Lab", "🌐 System Info"])
 
     with tab1:
-        st.subheader("🔮 High Probability Result")
-        st.write("Berdasarkan pembobotan data terbaru:")
+        st.subheader("🏆 Angka Jitu Konsensus")
+        st.metric("FINAL TARGET (4D)", res_final)
         
-        c1, c2, c3 = st.columns(3)
-        with c1: st.metric("Prediksi 4D", "".join(best_numbers))
-        with c2: st.metric("Prediksi 3D", "".join(best_numbers[1:]))
-        with c3: st.metric("Prediksi 2D", "".join(best_numbers[2:]))
-
+        st.divider()
+        st.write("### 🚀 Perbandingan Semua Mesin")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.info(f"**Statistik Trend:** {res_stat}")
+            st.info(f"**Sniper Index:** {res_index}")
+        with col2:
+            st.info(f"**Zigzag Pattern:** {res_zigzag}")
+            st.info(f"**Mistik Gabungan:** {res_mistik_l}")
+        
         st.write("### 🔔 Notifikasi Strategi")
-        notif_msg = f"📊 ANALISIS PROBABILITAS TINGGI:\n" + "\n".join(summary_stats)
-        st.code(notif_msg, language="text")
-        st.caption("Long press untuk copy ke WhatsApp/Grup.")
+        st.code(f"SYSTEM v8.0 READY:\nPrediksi Konsensus: {res_final}\nCadangan Mistik: {res_mistik_b}", language="text")
 
     with tab2:
-        st.subheader("📉 Detail Probabilitas Berbobot")
-        st.write("Angka dengan persentase tinggi adalah yang paling sering muncul di periode terakhir.")
-        df_posisi = pd.DataFrame(pos_df_data, index=[f"Angka {i}" for i in range(10)])
-        st.table(df_posisi)
+        st.subheader("🧪 Lab Mistik & Karakter Angka")
+        st.write("Hasil konversi angka berdasarkan getaran Mistik:")
+        st.write(f"- **Mistik Lama:** {res_mistik_l}")
+        st.write(f"- **Mistik Baru:** {res_mistik_b}")
+        st.write(f"- **Index:** {res_index}")
         
-        # Fitur baru: Analisis Ganjil/Genap Dominan
-        st.info("💡 Tip: Jika keyakinan di bawah 30%, disarankan menambah lebih banyak data histori.")
+        st.divider()
+        st.subheader("🐂 Analisis Karakter (Shio/Parity)")
+        # Deteksi Ganjil/Genap & Besar/Kecil
+        is_even = "Genap" if int(res_final[3]) % 2 == 0 else "Ganjil"
+        is_big = "Besar" if int(res_final[2:]) >= 50 else "Kecil"
+        st.success(f"Prediksi Karakter 2D: **{is_even} - {is_big}**")
 
     with tab3:
-        st.write(f"**WiFi:** {SystemInfo.WIFI}")
-        st.write(f"**Maps:** [Cek Lokasi Sinyal]({SystemInfo.MAPS})")
-        st.write(f"**Social Media:** {', '.join(SystemInfo.SOCIAL)}")
-        st.divider()
-        st.write("**FAQ Terurut (Bantuan):**")
-        for item in SystemInfo.FAQ:
-            st.write(item)
+        st.subheader("📐 Tabel Zigzag Otomatis")
+        st.table(pd.DataFrame(zigzag_rows, columns=["AS (▼)", "KOP (▼)", "KEP (▲)", "EKO (▲)"]))
+        st.write(f"**Tarikan Garis Zigzag:** {res_zigzag}")
 
-    # --- FITUR EXPORT ---
-    df_export = pd.DataFrame(data_4d, columns=['Histori Angka'])
-    csv = df_export.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Hasil Analisis (CSV)", data=csv, file_name="analisis_v65.csv", mime="text/csv")
+    with tab4:
+        st.write(f"**WiFi:** {SystemInfo.WIFI}")
+        st.write(f"**Maps:** [Cek Lokasi]({SystemInfo.MAPS})")
+        st.divider()
+        st.write("**FAQ Terurut (v8.0):**")
+        for item in SystemInfo.FAQ: st.write(item)
+
+    # EXPORT
+    csv = pd.DataFrame(data_4d).to_csv(index=False).encode('utf-8')
+    st.download_button("📥 Download Log v8.0", csv, "analisis_godmode.csv", "text/csv")
 
 else:
-    st.info("👋 Selamat Datang di Versi 6.5!")
-    st.warning("Silakan masukkan data histori di sidebar untuk melihat angka dengan probabilitas tinggi.")
+    st.info("👋 God Mode v8.0 Aktif. Masukkan histori untuk menjalankan semua rumus sekaligus.")
