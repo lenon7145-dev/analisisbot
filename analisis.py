@@ -129,7 +129,7 @@ if 'live_pool' in st.session_state:
         <i>Strategi ini mengunci manipulasi 1-digit yang sering dilakukan bandar di detik terakhir.</i>
         </div>
         <div class='guide-box'>
-        <b>4. Safety Mask (Noise Injection):</b> Pasang 3 angka Noise dengan nominal minimal (misal Rp 500) agar akun JoyPlay Anda tidak terdeteksi oleh bot Anti-Cheat admin bandar.
+        <b>4. Safety Mask (Noise Injection):</b> Pasang 3 angka Noise dengan nominal minimal (misal Rp 500) agar akun Anda tidak terdeteksi oleh bot Anti-Cheat admin bandar.
         </div>
         """, unsafe_allow_html=True)
         
@@ -169,3 +169,4 @@ if 'live_pool' in st.session_state:
 
 st.markdown("---")
 st.caption("© 2026 Sentinel v40.1 | The Absolute Sovereign | Full Refined Architecture")
+
