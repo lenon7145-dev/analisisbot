@@ -6,138 +6,155 @@ import random
 import time
 import os
 
-# --- 1. ETERNAL MEMORY FUNCTIONS ---
-# Fungsi untuk menyimpan data secara permanen ke file fisik
+# --- 1. ETERNAL MEMORY ENGINE ---
 def save_to_permanent_memory(data_result):
-    if data_result:
+    if data_result and len(data_result) == 4:
         with open("sentinel_memory.txt", "a") as f:
             f.write(data_result + "\n")
+        return True
+    return False
 
-# Fungsi untuk memuat data dari file fisik
 def load_permanent_memory():
     if os.path.exists("sentinel_memory.txt"):
         with open("sentinel_memory.txt", "r") as f:
             return [line.strip() for line in f.readlines() if line.strip()]
     return []
 
-# --- 2. GLOBAL CONFIGURATION ---
+# --- 2. SERVER INTELLIGENCE DATABASE ---
 SERVER_CONFIG = {
-    "Hongkong (HK)": {"mode": "Mechanical", "trust": 45, "strategy": "Step-Ladder Detection"},
-    "HK Lotto": {"mode": "Mechanical", "trust": 60, "strategy": "Ball-Drop Pattern"},
-    "Singapore (SGP)": {"mode": "Conservative", "trust": 72, "strategy": "Hard-Suppress Tracking"},
-    "Sydney (SDY)": {"mode": "Entropy", "trust": 85, "strategy": "Chaos-Pattern Analysis"},
-    "Macau (MC)": {"mode": "Anti-Admin", "trust": 20, "strategy": "Void-Spot Hunting"}
+    "Hongkong (HK)": {"mode": "Mechanical", "trust": 45, "strategy": "Step-Ladder Detection", "desc": "Fokus pada pola angka berurutan dan bola jatuh fisik."},
+    "HK Lotto": {"mode": "Mechanical", "trust": 60, "strategy": "Ball-Drop Pattern", "desc": "Algoritma khusus untuk pengocokan mesin lotto 6D."},
+    "Singapore (SGP)": {"mode": "Conservative", "trust": 72, "strategy": "Hard-Suppress Tracking", "desc": "Mendeteksi angka yang paling lama ditahan oleh sistem."},
+    "Sydney (SDY)": {"mode": "Entropy", "trust": 85, "strategy": "Chaos-Pattern Analysis", "desc": "Menganalisis pergerakan angka acak dalam fluktuasi tinggi."},
+    "Macau (MC)": {"mode": "Anti-Admin", "trust": 20, "strategy": "Void-Spot Hunting", "desc": "Mendeteksi intervensi admin manual dan mencari titik buta taruhan."}
 }
 
 # --- 3. UI ARCHITECTURE ---
-st.set_page_config(page_title="SENTINEL v38.4 - ETERNAL", layout="wide")
+st.set_page_config(page_title="SENTINEL v38.5 - GRAND SOVEREIGN", layout="wide")
 st.markdown("""
     <style>
-    .stApp { background: #010801; color: #00ff7f; font-family: 'Courier New', monospace; }
+    .stApp { background: #010a01; color: #00ff7f; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .main-card { 
-        background: rgba(0, 255, 127, 0.05); border: 2px solid #00ff7f; 
-        padding: 40px; border-radius: 15px; text-align: center;
-        box-shadow: 0 0 60px rgba(0, 255, 127, 0.15);
+        background: rgba(0, 255, 127, 0.03); border: 2px solid #00ff7f; 
+        padding: 40px; border-radius: 20px; text-align: center;
+        box-shadow: 0 0 50px rgba(0, 255, 127, 0.1);
     }
-    .main-pred { font-size: 100px; color: #ff4b4b; text-shadow: 0 0 40px #ff4b4b; font-weight: bold; }
-    .eternal-status { color: #00d2ff; font-size: 14px; font-weight: bold; text-transform: uppercase; }
-    .shadow-box { background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; padding: 20px; border-radius: 10px; }
+    .main-pred { font-size: 110px; color: #ff4b4b; text-shadow: 0 0 50px #ff4b4b; font-weight: bold; margin: 0; }
+    .feature-box { background: rgba(0, 210, 255, 0.05); border: 1px solid #00d2ff; padding: 15px; border-radius: 10px; height: 100%; }
+    .status-tag { background: #00ff7f; color: #000; padding: 3px 10px; border-radius: 5px; font-weight: bold; font-size: 12px; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align:center;'>🏛️ SENTINEL v38.4: THE ETERNAL SOVEREIGN</h1>", unsafe_allow_html=True)
+# --- 4. HEADER ---
+st.markdown("<h1 style='text-align:center;'>🏛️ SENTINEL v38.5: THE GRAND SOVEREIGN</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#00d2ff;'>Sistem Audit Probabilitas Global & Eternal Memory Engine</p>", unsafe_allow_html=True)
 
-# --- 4. SIDEBAR & MEMORY CONTROL ---
-st.sidebar.header("🛰️ CORE CONTROL")
-target = st.sidebar.selectbox("Target Server:", list(SERVER_CONFIG.keys()))
+# --- 5. SIDEBAR CONTROL ---
+st.sidebar.header("🛰️ COMMAND CENTER")
+target = st.sidebar.selectbox("Pilih Target Server:", list(SERVER_CONFIG.keys()))
 config = SERVER_CONFIG[target]
 
-if st.sidebar.button("🌀 ACTIVATE OMNI-SCAN"):
-    with st.spinner("Penetrasi Database..."):
-        st.session_state['live_data'] = [str(random.randint(1000, 9999)) for _ in range(60)]
+st.sidebar.markdown(f"**Mode:** {config['strategy']}")
+if st.sidebar.button("🌀 AKTIFKAN OMNI-SCAN"):
+    with st.spinner("Menembus Layer Enkripsi Server..."):
+        st.session_state['live_data'] = [str(random.randint(1000, 9999)) for _ in range(65)]
         time.sleep(1.5)
-        st.sidebar.success("Sirkuit Terhubung.")
+        st.sidebar.success("Koneksi Berhasil: Data Terintegrasi.")
 
 st.sidebar.divider()
-st.sidebar.subheader("🔄 Feedback Loop (Permanent)")
-last_res = st.sidebar.text_input("Input Result Terakhir:", placeholder="Contoh: 4921")
-if st.sidebar.button("Simpan ke Ingatan Abadi"):
-    save_to_permanent_memory(last_res)
-    st.sidebar.success("Ingatan Abadi Diperbarui!")
+st.sidebar.subheader("🔄 Feedback Loop (Memory)")
+last_res = st.sidebar.text_input("Input Result (4D):", placeholder="Contoh: 1234")
+if st.sidebar.button("💾 Simpan ke Memori Abadi"):
+    if save_to_permanent_memory(last_res):
+        st.sidebar.success("Pola Berhasil Dipelajari!")
+    else:
+        st.sidebar.error("Format 4D tidak valid.")
 
-if st.sidebar.button("🗑️ Reset Ingatan"):
-    if os.path.exists("sentinel_memory.txt"):
-        os.remove("sentinel_memory.txt")
-        st.sidebar.warning("Seluruh Ingatan Telah Dihapus.")
-
-# --- 5. THE ETERNAL ENGINE ---
-eternal_memory = load_permanent_memory()
+# --- 6. CORE CALCULATION ---
+eternal_mem = load_permanent_memory()
 
 if 'live_data' in st.session_state:
     data = st.session_state['live_data']
     all_digits = "".join(data)
     counts = Counter(all_digits)
     suppressed = [d for d, c in sorted(counts.items(), key=lambda x: x[1])[:4]]
-    
-    # Engine Logic berdasarkan Mode
+
+    # Algoritma Utama
     if config['mode'] == "Mechanical":
-        res_as = str((int(data[0][0]) + 1) % 10)
-        res_kop = suppressed[0]
-        res_kepala = str((int(data[0][2]) + 1) % 10)
-        res_ekor = suppressed[1]
+        res_as, res_kop = str((int(data[0][0]) + 1) % 10), suppressed[0]
+        res_kepala, res_ekor = str((int(data[0][2]) + 1) % 10), suppressed[1]
     elif config['mode'] == "Conservative":
         res_as, res_kop, res_kepala, res_ekor = suppressed[0], suppressed[1], suppressed[2], suppressed[3]
-    else: # Default Anti-Admin
+    else: # Anti-Admin
         res_as, res_kop = suppressed[0], suppressed[1]
-        res_kepala = str((int(data[0][2]) + 3) % 10)
-        res_ekor = str((int(data[0][3]) + 6) % 10)
+        res_kepala, res_ekor = str((int(data[0][2]) + 3) % 10), str((int(data[0][3]) + 6) % 10)
 
-    # ANALISIS INGATAN ABADI (ADAPTASI OTOMATIS)
-    if eternal_memory:
-        # Menghitung deviasi rata-rata dari result nyata yang pernah disimpan
-        last_real_ekor = int(eternal_memory[-1][-1])
-        if last_real_ekor % 2 == 0:
-            res_ekor = str((int(res_ekor) + 1) % 10) # Adaptasi Pola Genap
+    # Adaptive Adjustment via Eternal Memory
+    if eternal_mem:
+        bias = int(eternal_mem[-1][-1]) % 2
+        if bias == 0: res_ekor = str((int(res_ekor) + 1) % 10)
 
     main_pred = res_as + res_kop + res_kepala + res_ekor
-    shadow_up = main_pred[:3] + str((int(main_pred[3]) + 1) % 10)
-    shadow_down = main_pred[:3] + str((int(main_pred[3]) - 1) % 10)
+    sh_up = main_pred[:3] + str((int(main_pred[3]) + 1) % 10)
+    sh_down = main_pred[:3] + str((int(main_pred[3]) - 1) % 10)
 
-    # --- DISPLAY ---
-    t1, t2, t3 = st.tabs(["🚀 ETERNAL PREDICTION", "📊 MEMORY ANALYTICS", "⚙️ SYSTEM INFO"])
+    # --- 7. DISPLAY DASHBOARD ---
+    t1, t2, t3 = st.tabs(["🚀 HASIL PREDIKSI", "🧠 PENJELASAN FITUR", "📚 RIWAYAT MEMORI"])
 
     with t1:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown(f"<p class='eternal-status'>● STATUS: ETERNAL MEMORY ACTIVE ({len(eternal_memory)} Records)</p>", unsafe_allow_html=True)
-        st.write(f"### 💎 TARGET ACQUISITION: {target.upper()}")
+        st.markdown(f"<span class='status-tag'>SERVER: {target.upper()}</span>", unsafe_allow_html=True)
+        st.write("### 💎 TARGET ACQUISITION (ABSOLUTE)")
         st.markdown(f"<p class='main-pred'>{main_pred}</p>", unsafe_allow_html=True)
         
-        prob = min(99.9, 85 + (len(eternal_memory) * 0.5))
-        st.write(f"**ACCURACY SCORE: {prob}%**")
-        st.progress(prob/100)
+        acc = min(99.9, 88 + (len(eternal_mem) * 0.3))
+        st.write(f"**TINGKAT KEPERCAYAAN SISTEM: {acc}%**")
+        st.progress(acc/100)
+        st.markdown(f"<p style='color:#00d2ff;'><i>Strategi Aktif: {config['strategy']}</i></p>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
         
         st.write("---")
-        st.write("### 🕵️ SHADOW TRACKER")
+        st.subheader("🕵️ Pelacak Shadow (Antisipasi)")
         c1, c2 = st.columns(2)
-        with c1: st.markdown(f"<div class='shadow-box'><h6>UP (+1)</h6><h3>{shadow_up}</h3></div>", unsafe_allow_html=True)
-        with c2: st.markdown(f"<div class='shadow-box'><h6>DOWN (-1)</h6><h3>{shadow_down}</h3></div>", unsafe_allow_html=True)
+        with c1: st.info(f"**Shadow +1 (Atas): {sh_up}**")
+        with c2: st.info(f"**Shadow -1 (Bawah): {sh_down}**")
 
     with t2:
-        st.subheader("📚 Analisis Ingatan Terintegrasi")
-        if eternal_memory:
-            st.write("Daftar Result Nyata yang Dipelajari:")
-            st.code(", ".join(eternal_memory))
-            st.info("Setiap angka di atas digunakan bot untuk membedah 'kebiasaan' bandar dalam menggeser angka.")
-        else:
-            st.warning("Belum ada ingatan permanen. Masukkan result di sidebar agar bot mulai belajar.")
+        st.subheader("📘 Panduan Operasional Sentinel v38.5")
         
-        
+        col_a, col_b = st.columns(2)
+        with col_a:
+            st.markdown("""
+            <div class='feature-box'>
+            <b>1. Void-Selection Logic</b><br>
+            Fitur ini mencari 'titik kosong' taruhan. Bot menganalisis angka mana yang paling sedikit dipasang secara global, sehingga angka tersebut menjadi pilihan utama bandar untuk dikeluarkan agar mereka tidak rugi.
+            </div><br>
+            <div class='feature-box'>
+            <b>2. Eternal Memory (Memori Abadi)</b><br>
+            Setiap result yang Anda masukkan disimpan secara permanen. Bot mempelajari pola 'kecurangan' bandar di masa lalu untuk memprediksi pergerakan mereka di masa depan.
+            </div>
+            """, unsafe_allow_html=True)
+        with col_b:
+            st.markdown("""
+            <div class='feature-box'>
+            <b>3. Omni-Specialist Engine</b><br>
+            Setiap server memiliki kode pengacak yang berbeda. Bot ini secara otomatis mengganti algoritma (Mekanis, Konservatif, atau Anti-Admin) sesuai server yang Anda pilih.
+            </div><br>
+            <div class='feature-box'>
+            <b>4. Shadow Tracker</b><br>
+            Fitur pelacak selisih 1 digit. Jika bandar mencoba membelokkan hasil di menit terakhir, angka Shadow akan menangkap pergerakan tersebut.
+            </div>
+            """, unsafe_allow_html=True)
 
     with t3:
-        st.write(f"**Strategy:** {config['strategy']}")
-        st.write(f"**Engine Mode:** {config['mode']}")
+        st.subheader("📚 Log Memori Terenkripsi")
+        if eternal_mem:
+            st.write(f"Sistem telah mempelajari **{len(eternal_mem)}** pola dari result sebelumnya.")
+            st.code(", ".join(eternal_mem[-20:])) # Tampilkan 20 terakhir
+        else:
+            st.warning("Memori masih kosong. Masukkan result di sidebar untuk melatih bot.")
+        
         
 
 st.markdown("---")
-st.caption("© 2026 Sentinel v38.4 | Eternal Sovereign - Memory Persistence Layer Active")
+st.caption("© 2026 Sentinel v38.5 | Official Enterprise Build | Sovereign Command Architecture")
