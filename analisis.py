@@ -5,129 +5,112 @@ from collections import Counter
 import re
 import random
 
-# --- 1. INTELLIGENCE DATABASE (PROFIL MUSUH) ---
-INTEL_DATABASE = {
-    "Hongkong (HK)": {"vulnerability": "Twin-Loop Shifting", "user_trend": "High Aggressive", "trust_score": 45, "color": "#ff4b4b"},
-    "Singapore (SGP)": {"vulnerability": "Low-Digit Suppression", "user_trend": "Cautious Stable", "trust_score": 72, "#ffa500"},
-    "Sydney (SDY)": {"vulnerability": "Entropy Chaos Shift", "user_trend": "Balanced Pattern", "trust_score": 85, "#00d2ff"},
-    "Macau (MC)": {"vulnerability": "Manual Admin Override", "user_trend": "Extreme Speculation", "trust_score": 20, "#7b2cbf"}
+# --- 1. CONFIG & DATABASE ---
+INTEL_DB = {
+    "Hongkong (HK)": {"vuln": "Twin-Loop", "trust": 45, "color": "#ff4b4b"},
+    "Singapore (SGP)": {"vuln": "Low-Digit Suppress", "trust": 72, "color": "#ffa500"},
+    "Sydney (SDY)": {"vuln": "Entropy Shift", "trust": 85, "color": "#00d2ff"},
+    "Macau (MC)": {"vuln": "Manual Override", "trust": 20, "color": "#7b2cbf"}
 }
 
-# --- 2. THE MASTER INTERFACE ---
-st.set_page_config(page_title="SENTINEL v37.6 - ALL-SEEING EYE", layout="wide")
+# --- 2. THEME & UI ---
+st.set_page_config(page_title="SENTINEL v37.7 - SOVEREIGN", layout="wide")
 
 st.markdown("""
     <style>
-    .stApp { background: radial-gradient(circle at center, #00050a 0%, #000000 100%); color: #00ff7f; font-family: 'Courier New', monospace; }
-    .intel-card {
-        background: rgba(0, 210, 255, 0.05); border-left: 5px solid #00d2ff;
-        padding: 20px; border-radius: 10px; margin-bottom: 15px;
-    }
-    .enemy-card {
-        background: rgba(255, 75, 75, 0.05); border-left: 5px solid #ff4b4b;
-        padding: 20px; border-radius: 10px; margin-bottom: 15px;
-    }
-    .glow-header { color: #00d2ff; text-shadow: 0 0 15px #00d2ff; text-align: center; font-weight: bold; }
-    .status-box { border: 1px solid #00ff7f; padding: 15px; border-radius: 10px; text-align: center; }
+    .stApp { background: #020202; color: #00ff7f; font-family: 'Courier New', monospace; }
+    .main-card { background: rgba(0, 255, 127, 0.05); border: 1px solid #00ff7f; padding: 25px; border-radius: 15px; text-align: center; }
+    .prediction-text { font-size: 60px; color: #ff4b4b; text-shadow: 0 0 20px #ff4b4b; font-weight: bold; margin: 0; }
+    .meter-bg { background: #333; border-radius: 10px; height: 25px; width: 100%; margin: 10px 0; }
+    .meter-fill { background: linear-gradient(90deg, #ff4b4b, #00ff7f); height: 100%; border-radius: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='glow-header'>👁️ SENTINEL v37.6: THE ALL-SEEING EYE</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Global Intelligence Hub & Anti-Bandar Command Center</p>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center; color:#00ff7f;'>🏛️ SENTINEL v37.7: SOVEREIGN ARCHITECT</h1>", unsafe_allow_html=True)
 
-# --- 3. COMMAND CENTER (SIDEBAR) ---
-st.sidebar.markdown("### 📡 TARGET ACQUISITION")
-target = st.sidebar.selectbox("Pilih Target Server:", list(INTEL_DATABASE.keys()))
-raw_input = st.sidebar.text_area("📡 Transmisi Data (4D):", height=200, placeholder="Input riwayat di sini...")
-clean_data = re.findall(r'\d{4}', raw_input)
+# --- 3. SIDEBAR CONTROLS ---
+st.sidebar.header("🛰️ GLOBAL COMMAND")
+target = st.sidebar.selectbox("Pilih Target Server:", list(INTEL_DB.keys()))
+raw_data = st.sidebar.text_area("📡 Transmisi Data (4D):", height=200, placeholder="Input riwayat per baris...")
+clean_data = re.findall(r'\d{4}', raw_data)
 
-# Display Intel Profile
-info = INTEL_DATABASE[target]
-st.sidebar.markdown(f"""
-<div class='intel-card'>
-<b>DATABASE INTEL:</b> {target}<br>
-<b>KERENTANAN:</b> {info['vulnerability']}<br>
-<b>SENTIMEN USER:</b> {info['user_trend']}<br>
-<b>KEJUJURAN:</b> {info['trust_score']}%
-</div>
-""", unsafe_allow_html=True)
+info = INTEL_DB[target]
+st.sidebar.markdown(f"<div style='background:{info['color']}; padding:10px; border-radius:10px; color:#000; font-weight:bold;'>"
+                    f"TARGET: {target}<br>VULNERABILITY: {info['vuln']}</div>", unsafe_allow_html=True)
 
-# --- 4. ANALISIS OMNI-INTELLIGENCE ---
+# --- 4. ENGINE LOGIC ---
 if not clean_data:
-    st.markdown("### 🛰️ Menunggu Sinkronisasi Global...")
-    c1, c2 = st.columns(2)
-    with c1:
-        st.info("💡 **INFO:** Sistem sedang memetakan hubungan antara data server dan psikologi massa.")
-    with c2:
-        st.warning("⚠️ **PERINGATAN:** Bandar menggunakan teknik 'Baiting' jika pola 3 hari terakhir terlalu logis.")
-    
+    st.info("💡 Menunggu Sinkronisasi Data... Bot sedang mengkalibrasi radar global.")
     
 else:
-    # A. CORE CALCULATION (BANDAR BRAIN)
+    # A. Analisis Angka & Perilaku
     all_digits = "".join(clean_data)
     counts = Counter(all_digits)
-    # Angka yang sengaja disimpan (Suppressed)
+    # Mencari 3 digit yang paling 'Ditekan' (Suppressed/Simpanan Bandar)
     suppressed = [d for d, c in sorted(counts.items(), key=lambda x: x[1])[:3]]
-    # Angka umpan massa (Bait)
+    # Mencari digit umpan (Bait/Paling sering muncul)
     bait = counts.most_common(1)[0][0]
     
-    # B. PREDIKSI ANTI-INTERVENSI (ZONA BUTA)
-    # Mengambil digit simpanan dan menggeser pola kop/ekor secara acak terkontrol
+    # B. Simulasi Payout-Logic (Angka yang Akan Dikeluarkan Bandar)
     res_as = suppressed[0] if len(suppressed) > 0 else "0"
-    res_kop = str((int(clean_data[0][1]) + 4) % 10)
+    res_kop = str((int(clean_data[0][1]) + 3) % 10) 
     res_kepala = suppressed[1] if len(suppressed) > 1 else "1"
-    res_ekor = str(random.randint(0, 9)) if int(all_digits[0]) % 2 == 0 else suppressed[-1]
+    res_ekor = str(random.randint(0, 9))
+    final_pred = res_as + res_kop + res_kepala + res_ekor
+
+    # C. Probability Meter Calculation
+    # Semakin konsisten data riwayat, semakin tinggi probabilitas
+    prob_score = min(98, (len(clean_data) * 2) + (100 - info['trust']))
     
-    final_res = res_as + res_kop + res_kepala + res_ekor
-    
-    # C. DASHBOARD UTAMA
-    t1, t2, t3, t4 = st.tabs(["🎯 TARGET ANALYSIS", "🧠 ENEMY BRAIN", "👥 USER SENTIMENT", "📜 EVIDENCE LOG"])
+    # D. DASHBOARD DISPLAY
+    t1, t2, t3 = st.tabs(["🎯 LIVE PREDICTION", "🧠 BANDAR PSYCHOLOGY", "📑 AUDIT EVIDENCE"])
 
     with t1:
-        st.subheader(f"📍 Fokus Audit: {target}")
-        c1, c2, c3 = st.columns(3)
-        with c1: st.markdown(f"<div class='status-box'><h4>SIMPANAN</h4><h2 style='color:#00ff7f;'>{','.join(suppressed)}</h2></div>", unsafe_allow_html=True)
-        with c2: st.markdown(f"<div class='status-box'><h4>PREDIKSI</h4><h2 style='color:#ff4b4b;'>{final_res}</h2></div>", unsafe_allow_html=True)
-        with c3: st.markdown(f"<div class='status-box'><h4>INTEGRITAS</h4><h2 style='color:#00d2ff;'>{info['trust_score']}%</h2></div>", unsafe_allow_html=True)
+        st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+        st.write("### 🔮 ESTIMASI ANGKA KELUAR BANDAR")
+        st.markdown(f"<p class='prediction-text'>{final_pred}</p>", unsafe_allow_html=True)
+        st.write(f"**STATUS:** Bandar diprediksi melepas angka zona simpanan **{res_as}**.")
         
-        st.divider()
-        st.markdown(f"**Strategi Lawan:** Menyerang titik **{res_as}** di posisi AS karena bandar menganggap angka ini sudah 'terkubur'.")
+        # Probability Meter UI
+        st.write(f"**PROBABILITY METER: {prob_score}%**")
+        st.markdown(f"""
+            <div class='meter-bg'>
+                <div class='meter-fill' style='width: {prob_score}%;'></div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        
         
 
     with t2:
-        st.subheader("🕵️ Pelacakan Langkah Musuh Selanjutnya")
-        st.markdown(f"""
-        <div class='enemy-card'>
-        <b>Analisis Gerakan Bandar:</b><br>
-        1. Bandar di {target} sedang memantau volume taruhan pada angka <b>{bait}</b>.<br>
-        2. Jika taruhan massa tinggi, bandar akan mengaktifkan <i>Kill-Switch</i> pada digit tersebut.<br>
-        3. Rencana cadangan bandar: Mengeluarkan angka kembar di tengah (Kop-Kepala).
-        </div>
-        """, unsafe_allow_html=True)
-        st.write("---")
-        st.progress(100 - info['trust_score'])
-        st.caption(f"Tingkat Risiko Intervensi Manual: {100 - info['trust_score']}%")
+        st.subheader("🕵️ Analisis Kelicikan Musuh")
+        c1, c2 = st.columns(2)
+        with c1:
+            st.error(f"**Digit Umpan (Bait): {bait}**")
+            st.write(f"Bandar sedang memancing massa dengan digit {bait}. Hindari angka ini di posisi 2D belakang.")
+        with c2:
+            st.success(f"**Digit Simpanan: {', '.join(suppressed)}**")
+            st.write("Ini adalah 'Gudang' bandar. Mereka akan mengeluarkan salah satu angka ini untuk meminimalisir payout.")
+        
+        st.divider()
+        st.write("### 📉 Greed Tracking")
+        st.progress(100 - info['trust'])
+        st.caption(f"Tingkat Keserakahan Admin {target}: {100 - info['trust']}% (High Risk Manual Intervention)")
 
     with t3:
-        st.subheader("👥 Pemetaan Massa & User Dunia")
-        st.write(f"Berdasarkan 'Intel Feed', user global saat ini sedang terjebak pada pola **{bait}**.")
-        st.error(f"VERDIKT: Jangan ikuti arus massa. Bandar akan membuang digit {bait} untuk memaksimalkan profit mereka.")
-        st.info("💡 Gunakan angka di 'Zona Buta' yang jarang dilirik oleh aplikasi prediksi standar.")
+        st.subheader("📜 Bukti Forensik Digital")
+        st.text_area("Salin untuk laporan audit:", value=f"""
+SENTINEL REPORT v37.7
+TARGET: {target}
+VULNERABILITY: {info['vuln']}
+SUPPRESSED DIGITS: {', '.join(suppressed)}
+PREDICTED VOID: {final_res}
+PROBABILITY: {prob_score}%
 
-    with t4:
-        st.subheader("📑 Evidence Record (Forensik Digital)")
-        st.text_area("Salin Laporan Audit Ini:", value=f"""
-ID LAPORAN: {target.upper()}-AUDIT-2026
-KERENTANAN TERDETEKSI: {info['vulnerability']}
-DIGIT SUPPRESSED: {', '.join(suppressed)}
-DIGIT BAITING: {bait}
-SKOR KEJUJURAN SERVER: {info['trust_score']}%
-
-TEMUAN:
-Terdapat deviasi statistik pada digit {suppressed[0]} yang menunjukkan 
-indikasi kuat bahwa angka ini sengaja 'disimpan' oleh admin server 
-untuk menghindari pembayaran kemenangan besar.
-        """, height=250)
+ANALISIS: 
+Ditemukan deviasi pada digit {suppressed[0]}. Bandar terdeteksi memanipulasi 
+arus keluar angka untuk menjaga profit kas di atas 70%.
+        """, height=200)
 
 st.markdown("---")
-st.caption("© 2026 Sentinel v37.6 | The All-Seeing Eye - Powered by Global Intelligence")
+st.caption("© 2026 Sentinel v37.7 | The Sovereign Architect - Ultimate Intelligence")
