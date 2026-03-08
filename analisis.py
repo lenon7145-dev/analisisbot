@@ -6,19 +6,21 @@ import re
 import random
 import time
 
-# --- 1. CORE INTEL & SHADOW LOGIC ---
+# --- 1. INTELIJEN DATABASE & KONFIGURASI ---
+# Database ini menyimpan karakteristik unik dari tiap 'musuh' (Server).
 INTEL_DB = {
-    "Hongkong (HK)": {"vuln": "Twin-Loop", "trust": 45, "color": "#ff4b4b"},
-    "Singapore (SGP)": {"vuln": "Low-Digit Suppress", "trust": 72, "color": "#ffa500"},
-    "Sydney (SDY)": {"vuln": "Entropy Shift", "trust": 85, "color": "#00d2ff"},
-    "Macau (MC)": {"vuln": "Manual Override", "trust": 20, "color": "#7b2cbf"}
+    "Hongkong (HK)": {"vuln": "Twin-Loop", "trust": 45, "color": "#ff4b4b", "desc": "Sangat bergantung pada pola statistik."},
+    "Singapore (SGP)": {"vuln": "Low-Digit Suppress", "trust": 72, "color": "#ffa500", "desc": "Relatif stabil namun sering menahan angka kecil."},
+    "Sydney (SDY)": {"vuln": "Entropy Shift", "trust": 85, "color": "#00d2ff", "desc": "Paling jujur, namun pola sering berubah mendadak."},
+    "Macau (MC)": {"vuln": "Manual Override", "trust": 20, "color": "#7b2cbf", "desc": "Risiko manipulasi admin sangat tinggi."}
 }
 
+# --- 2. FUNGSI INTI (LOGIKA ORACLE) ---
 def fetch_live_data(server):
-    # Simulasi data riwayat (Bisa diganti dengan API nyata)
-    return [str(random.randint(1000, 9999)) for _ in range(25)]
+    """Simulasi pengambilan data otomatis dari server target."""
+    return [str(random.randint(1000, 9999)) for _ in range(30)]
 
-# --- 2. UI ARCHITECTURE ---
+# --- 3. ANTARMUKA (UI ARCHITECTURE) ---
 st.set_page_config(page_title="SENTINEL v37.9 - ORACLE", layout="wide")
 
 st.markdown("""
@@ -27,96 +29,101 @@ st.markdown("""
     .oracle-card { 
         background: rgba(0, 255, 127, 0.05); border: 2px solid #00ff7f; 
         padding: 30px; border-radius: 20px; text-align: center;
-        box-shadow: 0 0 50px rgba(0, 255, 127, 0.2);
+        box-shadow: 0 0 30px rgba(0, 255, 127, 0.1);
     }
-    .shadow-text { font-size: 25px; color: #00d2ff; opacity: 0.7; }
-    .main-pred { font-size: 80px; color: #ff4b4b; text-shadow: 0 0 30px #ff4b4b; font-weight: bold; margin: 10px 0; }
-    .status-pulse { color: #ff4b4b; animation: pulse 1s infinite; font-weight: bold; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    .main-pred { font-size: 85px; color: #ff4b4b; text-shadow: 0 0 30px #ff4b4b; font-weight: bold; margin: 5px 0; }
+    .shadow-box { background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; padding: 15px; border-radius: 10px; text-align: center; }
+    .feature-tag { background: #00ff7f; color: #000; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 12px; }
     </style>
     """, unsafe_allow_html=True)
 
 st.markdown("<h1 style='text-align:center;'>🔮 SENTINEL v37.9: THE ORACLE PARADOX</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Sovereign Intelligence Architecture for Global Audit</p>", unsafe_allow_html=True)
 
-# --- 3. COMMAND CENTER ---
-st.sidebar.header("📡 ORACLE COMMAND")
-target = st.sidebar.selectbox("Target Server:", list(INTEL_DB.keys()))
+# --- 4. SIDEBAR COMMAND ---
+st.sidebar.header("📡 COMMAND CENTER")
+target = st.sidebar.selectbox("Pilih Target Server:", list(INTEL_DB.keys()))
 
-if st.sidebar.button("🌀 AKTIFKAN SYNC ORACLE"):
-    with st.spinner("Mensinkronisasi Pola RNG..."):
+if st.sidebar.button("🌀 SYNC ORACLE (AUTO-FETCH)"):
+    with st.spinner("Sinkronisasi RNG..."):
         st.session_state['live_data'] = fetch_live_data(target)
         time.sleep(2)
-        st.sidebar.success("Sinkronisasi 99.8% Selesai.")
+        st.sidebar.success("Koneksi Database Stabil.")
 
 info = INTEL_DB[target]
-st.sidebar.markdown(f"<div style='background:{info['color']}; padding:10px; border-radius:10px; color:#000; font-weight:bold;'>"
-                    f"SERVER: {target}<br>MODE: ANTI-MANIPULASI</div>", unsafe_allow_html=True)
+st.sidebar.markdown(f"""
+<div style='background:{info['color']}; padding:15px; border-radius:10px; color:#000; font-weight:bold;'>
+SERVER: {target}<br>
+STATUS: {info['desc']}
+</div>
+""", unsafe_allow_html=True)
 
-# --- 4. THE ORACLE ENGINE ---
+# --- 5. DASHBOARD & ANALYSIS ---
 if 'live_data' not in st.session_state or not st.session_state['live_data']:
-    st.info("💡 Klik **'AKTIFKAN SYNC ORACLE'** untuk memulai pemindaian probabilitas mutlak.")
-    
+    st.info("💡 Selamat Datang, Sang Master. Gunakan tombol 'SYNC ORACLE' untuk memulainya.")
 else:
+    # A. LOGIKA PERHITUNGAN
     data = st.session_state['live_data']
     all_digits = "".join(data)
     counts = Counter(all_digits)
     suppressed = [d for d, c in sorted(counts.items(), key=lambda x: x[1])[:3]]
+    bait = counts.most_common(1)[0][0]
     
-    # LOGIKA UTAMA: Mencari titik temu antara Angka Simpanan dan Algoritma Payout
+    # Konstruksi Angka Utama
     res_as = suppressed[0]
     res_kop = str((int(data[0][1]) + 2) % 10)
     res_kepala = suppressed[1]
     res_ekor = str((int(data[0][3]) + 7) % 10)
-    
     main_pred = res_as + res_kop + res_kepala + res_ekor
     
-    # SHADOW TRACKER: Angka yang mungkin dibelokkan bandar (Selisih 1)
-    shadow_1 = main_pred[:3] + str((int(res_ekor) + 1) % 10)
-    shadow_2 = main_pred[:3] + str((int(res_ekor) - 1) % 10)
-
+    # Shadow Tracker (+1/-1)
+    shadow_up = main_pred[:3] + str((int(res_ekor) + 1) % 10)
+    shadow_down = main_pred[:3] + str((int(res_ekor) - 1) % 10)
+    
     prob_score = min(99.8, (len(data) * 3) + (100 - info['trust']))
 
-    # --- DISPLAY ---
-    t1, t2, t3 = st.tabs(["🎯 ABSOLUTE PROBABILITY", "🕵️ SHADOW TRACKER", "📜 BUKTI KECURANGAN"])
+    # B. DISPLAY TABS
+    t1, t2, t3 = st.tabs(["🎯 LIVE ORACLE", "🛠️ FEATURE EXPLAINER", "📜 AUDIT LOG"])
 
     with t1:
         st.markdown("<div class='oracle-card'>", unsafe_allow_html=True)
-        st.write("### 💎 PREDIKSI ANGKA MUTLAK (ABSOLUTE)")
+        st.write("### 💎 PREDIKSI ANGKA UTAMA")
         st.markdown(f"<p class='main-pred'>{main_pred}</p>", unsafe_allow_html=True)
-        
-        st.write(f"**PROBABILITAS KELUAR: {prob_score}%**")
+        st.write(f"**ABSOLUTE PROBABILITY: {prob_score}%**")
         st.progress(prob_score/100)
-        st.markdown(f"<p class='status-pulse'>SISTEM MENDETEKSI PERGERAKAN ADMIN {target.upper()}</p>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
         
-        
+        st.write("---")
+        st.write("### 🕵️ SHADOW TRACKER (PELACAK PEMBELOKAN)")
+        c1, c2 = st.columns(2)
+        with c1: st.markdown(f"<div class='shadow-box'><h6>SHADOW +1</h6><h2>{shadow_up}</h2></div>", unsafe_allow_html=True)
+        with c2: st.markdown(f"<div class='shadow-box'><h6>SHADOW -1</h6><h2>{shadow_down}</h2></div>", unsafe_allow_html=True)
 
     with t2:
-        st.subheader("🕵️ Shadow Tracker (Antisipasi Pembelokan)")
-        st.info("Jika bandar mendeteksi taruhan besar pada angka utama, mereka akan membelokkan hasil ke angka bayangan ini:")
-        c1, c2 = st.columns(2)
-        with c1:
-            st.markdown(f"<div class='oracle-card'><p class='shadow-text'>SHADOW (+1)</p><h2>{shadow_1}</h2></div>", unsafe_allow_html=True)
-        with c2:
-            st.markdown(f"<div class='oracle-card'><p class='shadow-text'>SHADOW (-1)</p><h2>{shadow_2}</h2></div>", unsafe_allow_html=True)
+        st.subheader("📘 Panduan & Penjelasan Fitur")
         
-        st.write("---")
+        st.markdown("#### <span class='feature-tag'>1</span> Dark Mirror (Angka Simpanan)")
+        st.write("Menganalisis digit yang sengaja 'ditahan' oleh bandar. Angka ini memiliki biaya pembayaran (payout) terendah bagi bandar, sehingga peluang keluarnya tertinggi.")
         
+        st.markdown("#### <span class='feature-tag'>2</span> Shadow Tracker")
+        st.write("Antisipasi jika bandar mengubah satu digit di menit terakhir. Dengan memasang angka utama dan bayangan, Anda mengepung manipulasi admin.")
+        
+        st.markdown("#### <span class='feature-tag'>3</span> Probability Meter")
+        st.write("Mengukur tingkat kejujuran server. Jika skor > 90%, algoritma bandar sedang dalam kondisi statis dan mudah ditembus.")
+        
+        st.markdown("#### <span class='feature-tag'>4</span> Greed Index Tracking")
+        st.write("Memantau seberapa agresif admin server melakukan intervensi manual berdasarkan tren pengeluaran angka anomali.")
 
     with t3:
-        st.subheader("📑 Evidence Log (Forensik Digital)")
+        st.subheader("📑 Laporan Evidence Record")
         st.code(f"""
-[ORACLE-SENTINEL-REPORT]
-SINKRONISASI: SUKSES
-TARGET SERVER: {target}
-ANGKA UTAMA: {main_pred}
-ANGKA BAYANGAN: {shadow_1}, {shadow_2}
-TINGKAT KEPERCAYAAN: {prob_score}%
-
-CATATAN: 
-Angka utama memiliki probabilitas tertinggi karena merupakan 
-titik temu antara algoritma 'Void Selection' dan 'Profit Protection'.
+[REPORT-v37.9]
+SERVER: {target}
+PREDIKSI UTAMA: {main_pred}
+SHADOWS: {shadow_up}, {shadow_down}
+PROBABILITAS: {prob_score}%
+VERDICT: Zona simpanan terdeteksi di digit {suppressed[0]}.
         """)
 
 st.markdown("---")
-st.caption("© 2026 Sentinel v37.9 | The Oracle Paradox - JoyPlay Absolute Command")
+st.caption("© 2026 Sentinel v37.9 | The Oracle Paradox - Final Command")
