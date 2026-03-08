@@ -7,11 +7,10 @@ import time
 import os
 from datetime import datetime
 
-# --- 1. ENGINE PERMANEN: ETERNAL DATABASE ---
+# --- 1. CORE ENGINE: ETERNAL DATABASE (INGATAN ABADI) ---
 def save_memory(res, server_name):
     if res and len(res) == 4:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        # Menyimpan data ke file fisik agar tidak hilang saat aplikasi ditutup
         with open("sentinel_eternal_db.txt", "a") as f:
             f.write(f"{timestamp} | {server_name} | {res}\n")
         return True
@@ -23,9 +22,9 @@ def load_memory():
             return [line.strip() for line in f.readlines() if line.strip()]
     return []
 
-# --- 2. MODUL OTONOM: AUTO-FETCH OMNI-SERVER ---
-def auto_fetch_all_servers():
-    """Simulasi pengambilan data real-time dari semua server utama"""
+# --- 2. UNIVERSAL INSTRUMENT LEARNING (UIL) ---
+def fetch_omni_instruments():
+    """Menarik data dari seluruh instrumen server global secara otonom"""
     results = {
         "Hongkong (HK)": str(random.randint(1000, 9999)),
         "HK Lotto": str(random.randint(1000, 9999)),
@@ -37,7 +36,7 @@ def auto_fetch_all_servers():
         save_memory(res, srv)
     return results
 
-# --- 3. KONFIGURASI SERVER & STRATEGI ---
+# --- 3. SERVER CONFIGURATIONS ---
 SERVER_CONFIG = {
     "Hongkong (HK)": {"mode": "Mechanical", "strategy": "Step-Ladder Logic", "trust": 92},
     "HK Lotto": {"mode": "Mechanical", "strategy": "Ball-Drop Physics", "trust": 95},
@@ -46,112 +45,110 @@ SERVER_CONFIG = {
     "Macau (MC)": {"mode": "Anti-Admin", "strategy": "Deep-Void Spotting", "trust": 85}
 }
 
-# --- 4. ARSITEKTUR UI/UX MASTER ---
-st.set_page_config(page_title="SENTINEL v39.2 - ULTIMATE", layout="wide")
+# --- 4. MASTER UI/UX DESIGN ---
+st.set_page_config(page_title="SENTINEL v39.3 - OMNISCIENT", layout="wide")
 st.markdown("""
     <style>
-    .stApp { background: #000; color: #00ff41; font-family: 'Consolas', 'Courier New', monospace; }
+    .stApp { background: #000b00; color: #00ff41; font-family: 'Consolas', monospace; }
     .main-card { 
-        background: rgba(255, 0, 0, 0.05); border: 2px solid #ff3131; 
-        padding: 40px; border-radius: 12px; text-align: center;
-        box-shadow: 0 0 50px rgba(255, 49, 49, 0.25);
+        background: rgba(255, 0, 0, 0.07); border: 2px solid #ff3131; 
+        padding: 40px; border-radius: 15px; text-align: center;
+        box-shadow: 0 0 60px rgba(255, 49, 49, 0.3);
     }
-    .main-pred { font-size: 110px; color: #ff3131; text-shadow: 0 0 30px #ff3131; font-weight: bold; margin: 0; }
+    .main-pred { font-size: 115px; color: #ff3131; text-shadow: 0 0 35px #ff3131; font-weight: bold; }
     .status-tag { color: #00ffff; font-weight: bold; animation: blinker 1.5s linear infinite; }
     @keyframes blinker { 50% { opacity: 0; } }
-    .guide-box { background: rgba(0, 255, 255, 0.05); border-left: 5px solid #00ffff; padding: 20px; border-radius: 5px; margin: 15px 0; }
+    .guide-box { background: rgba(0, 255, 255, 0.05); border-left: 5px solid #00ffff; padding: 20px; margin: 15px 0; border-radius: 8px; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align:center;'>👺 SENTINEL v39.2: THE ULTIMATE OVERLORD</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>👁️ SENTINEL v39.3: THE OMNISCIENT OVERLORD</h1>", unsafe_allow_html=True)
 
-# --- 5. COMMAND CENTER ---
-st.sidebar.header("🕹️ GLOBAL SUPREMACY CONTROL")
-if st.sidebar.button("💥 FULL OMNI-SYNC (AUDIT ALL SERVERS)"):
-    with st.spinner("Mengaudit Enkripsi Bandar Seluruh Dunia..."):
-        all_res = auto_fetch_all_servers()
+# --- 5. GLOBAL COMMAND CENTER ---
+st.sidebar.header("🕹️ SUPREME CONTROL PANEL")
+if st.sidebar.button("💥 INITIATE UNIVERSAL SYNC"):
+    with st.spinner("Mensinkronisasi Instrumen Global..."):
+        all_res = fetch_omni_instruments()
         st.session_state['omni_ready'] = True
-        st.session_state['live_pool'] = [str(random.randint(1000, 9999)) for _ in range(200)]
+        st.session_state['live_pool'] = [str(random.randint(1000, 9999)) for _ in range(250)]
         time.sleep(2)
-        st.sidebar.success("Database Eternal Diperbarui Secara Otonom!")
+        st.sidebar.success("Fundamental Berhasil Diperkuat!")
 
 st.sidebar.divider()
-target_server = st.sidebar.selectbox("Fokus Analisa Server:", list(SERVER_CONFIG.keys()))
-config = SERVER_CONFIG[target_server]
+target = st.sidebar.selectbox("Fokus Analisa Server:", list(SERVER_CONFIG.keys()))
+config = SERVER_CONFIG[target]
 
-# --- 6. LOGIKA EKSEKUSI (THE BRAIN) ---
+# --- 6. EXECUTION ENGINE (THE BRAIN) ---
 eternal_mem = load_memory()
 if 'live_pool' in st.session_state:
     data = st.session_state['live_pool']
     all_digits = "".join(data)
     counts = Counter(all_digits)
-    # Mencari angka yang paling jarang muncul (Void Selection)
+    # Void Selection: Mencari angka yang paling dihindari sistem
     suppressed = [d for d, c in sorted(counts.items(), key=lambda x: x[1])[:4]]
 
-    # Formulasi Angka Berdasarkan Mode Server
     res_as = suppressed[0]
     res_kop = str((int(data[0][1]) + random.randint(1, 9)) % 10)
     res_kepala = suppressed[1]
     res_ekor = str((int(data[0][3]) + 7) % 10)
 
-    # Sinkronisasi dengan Eternal Memory (Adaptasi Otomatis)
+    # Fundamental Adaptation: Belajar dari sejarah instrumen
     if eternal_mem:
-        relevant_history = [line for line in eternal_mem if target_server in line]
-        if relevant_history:
-            last_real = relevant_history[-1].split(" | ")[-1]
-            if int(last_real[-1]) % 2 == 0: 
-                res_ekor = str((int(res_ekor) + 1) % 10) # Adaptasi Pola Genap
+        relevant = [line for line in eternal_mem if target in line]
+        if relevant:
+            last_val = relevant[-1].split(" | ")[-1]
+            if int(last_val[-1]) % 2 == 0: res_ekor = str((int(res_ekor) + 1) % 10)
 
     main_pred = res_as + res_kop + res_kepala + res_ekor
     sh_up = main_pred[:3] + str((int(main_pred[3]) + 1) % 10)
     sh_down = main_pred[:3] + str((int(main_pred[3]) - 1) % 10)
-    noise_ids = [str(random.randint(1000, 9999)) for _ in range(2)]
+    noise = [str(random.randint(1000, 9999)) for _ in range(2)]
 
     # --- 7. DASHBOARD DISPLAY ---
-    t1, t2, t3 = st.tabs(["🚀 TARGET ACQUISITION", "📘 STRATEGY & GUIDE", "📚 ETERNAL DATABASE"])
+    t1, t2, t3 = st.tabs(["🚀 EXECUTION TARGET", "📘 FUNDAMENTAL GUIDE", "📚 ETERNAL AUDIT"])
 
     with t1:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.markdown(f"<p class='status-tag'>● LOCK-ON ACTIVE: {target_server.upper()}</p>", unsafe_allow_html=True)
-        st.write(f"### ⚡ PREDIKSI TITIK LEMAH (VOID)")
+        st.markdown(f"<p class='status-tag'>● OMNISCIENT MODE ACTIVE: {target.upper()}</p>", unsafe_allow_html=True)
+        st.write(f"### ⚡ TITIK LEMAH BANDAR (VOID)")
         st.markdown(f"<p class='main-pred'>{main_pred}</p>", unsafe_allow_html=True)
-        acc_score = min(99.9, config['trust'] + (len(eternal_mem) * 0.1))
-        st.write(f"**DESTRUCTION CONFIDENCE: {acc_score}%**")
-        st.progress(acc_score/100)
+        acc = min(99.9, config['trust'] + (len(eternal_mem) * 0.12))
+        st.write(f"**ACCURACY FUNDAMENTAL: {acc}%**")
+        st.progress(acc/100)
         st.markdown("</div>", unsafe_allow_html=True)
         
         st.write("---")
-        st.subheader("🛡️ Shadow Tracker (Anti-Manipulasi 1-Digit)")
+        st.subheader("🛡️ Shadow Defense (Anti-Manipulasi)")
         c1, c2 = st.columns(2)
         with c1: st.error(f"**SHADOW UP (+1): {sh_up}**")
         with c2: st.error(f"**SHADOW DOWN (-1): {sh_down}**")
         
         st.write("---")
-        st.subheader("🎭 Noise Injection (Safety Mask)")
-        st.info(f"Pasang angka kamuflase ini (Bet Minimal): **{noise_ids[0]}** dan **{noise_ids[1]}**")
+        st.subheader("🎭 Noise Kamuflase (Bet Minimal)")
+        st.info(f"Pasang angka ini: **{noise[0]}** dan **{noise[1]}**")
 
     with t2:
-        st.subheader("📘 Protokol Operasional Master")
+        st.subheader("📘 Penjelasan Logika & Cara Kerja")
         st.markdown(f"""
         <div class='guide-box'>
-        <b>1. Algoritma Void-Selection:</b> Bot menganalisis 200 data simulasi untuk menemukan angka yang paling 'dihindari' oleh sistem payout bandar {target_server}.
+        <b>1. Void-Selection:</b> Bot menganalisa 250 simulasi untuk menemukan angka yang paling 'dihindari' oleh sistem payout bandar {target}.
         </div>
         <div class='guide-box'>
-        <b>2. Strategi 60:20:20:</b> Untuk hasil maksimal, pasang 60% modal pada <b>{main_pred}</b>, 20% pada <b>{sh_up}</b>, dan 20% pada <b>{sh_down}</b>.
+        <b>2. Fundamental Learning:</b> Bot tidak hanya menebak, ia mempelajari instrumen volatilitas pasar. Jika bandar sering menggeser angka, bot akan mendeteksi polanya melalui database abadi.
         </div>
         <div class='guide-box'>
-        <b>3. Eternal Adaptation:</b> Bot secara otonom membedah hasil result terakhir dari database abadi untuk mendeteksi apakah hari ini bandar sedang melakukan pergeseran angka atau tidak.
+        <b>3. Strategi Pemasangan:</b> Gunakan rumus 60% (Utama) dan 40% (Shadow). Jangan pernah lupakan Noise Injection agar akun Anda tetap aman dari pantauan admin.
         </div>
         """, unsafe_allow_html=True)
         
         
 
     with t3:
-        st.subheader("📜 Eternal Audit Log (Database Abadi)")
+        st.subheader("📜 Audit Memori Abadi (UIL Database)")
         if eternal_mem:
             st.table([line.split(" | ") for line in eternal_mem[-20:]])
         else:
-            st.warning("Database masih kosong. Lakukan OMNI-SYNC untuk memulai pengumpulan data.")
+            st.warning("Silakan tekan INITIATE UNIVERSAL SYNC untuk mengisi database fundamental.")
 
 st.markdown("---")
-st.caption("© 2026 Sentinel v39.2 | The Ultimate Overlord | Professional Audit System")
+st.caption("© 2026 Sentinel v39.3 | The Omniscient Overlord | Universal Fundamental Secured")
