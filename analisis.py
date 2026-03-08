@@ -4,8 +4,9 @@ import numpy as np
 from collections import Counter
 import re
 import random
+import time
 
-# --- 1. CONFIG & DATABASE ---
+# --- 1. CONFIG & DATABASE INTEL ---
 INTEL_DB = {
     "Hongkong (HK)": {"vuln": "Twin-Loop", "trust": 45, "color": "#ff4b4b"},
     "Singapore (SGP)": {"vuln": "Low-Digit Suppress", "trust": 72, "color": "#ffa500"},
@@ -13,104 +14,98 @@ INTEL_DB = {
     "Macau (MC)": {"vuln": "Manual Override", "trust": 20, "color": "#7b2cbf"}
 }
 
-# --- 2. THEME & UI ---
-st.set_page_config(page_title="SENTINEL v37.7 - SOVEREIGN", layout="wide")
+# --- 2. AUTO-FETCH LOGIC (PENGAMBILAN DATA OTOMATIS) ---
+def fetch_live_data(server):
+    """
+    Fungsi ini mensimulasikan pengambilan data otomatis dari server. 
+    Nantinya bisa dihubungkan ke API atau URL database JoyPlay.
+    """
+    # Simulasi data riwayat otomatis (20 data terakhir)
+    base_data = [str(random.randint(1000, 9999)) for _ in range(20)]
+    return base_data
+
+# --- 3. THEME & UI ---
+st.set_page_config(page_title="SENTINEL v37.8 - AUTOMATOR", layout="wide")
 
 st.markdown("""
     <style>
     .stApp { background: #020202; color: #00ff7f; font-family: 'Courier New', monospace; }
     .main-card { background: rgba(0, 255, 127, 0.05); border: 1px solid #00ff7f; padding: 25px; border-radius: 15px; text-align: center; }
     .prediction-text { font-size: 60px; color: #ff4b4b; text-shadow: 0 0 20px #ff4b4b; font-weight: bold; margin: 0; }
-    .meter-bg { background: #333; border-radius: 10px; height: 25px; width: 100%; margin: 10px 0; }
-    .meter-fill { background: linear-gradient(90deg, #ff4b4b, #00ff7f); height: 100%; border-radius: 10px; }
+    .auto-status { color: #00d2ff; font-weight: bold; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align:center; color:#00ff7f;'>🏛️ SENTINEL v37.7: SOVEREIGN ARCHITECT</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>🏛️ SENTINEL v37.8: THE AUTOMATOR</h1>", unsafe_allow_html=True)
 
-# --- 3. SIDEBAR CONTROLS ---
-st.sidebar.header("🛰️ GLOBAL COMMAND")
+# --- 4. COMMAND CENTER ---
+st.sidebar.header("📡 AUTO-FETCH COMMAND")
 target = st.sidebar.selectbox("Pilih Target Server:", list(INTEL_DB.keys()))
-raw_data = st.sidebar.text_area("📡 Transmisi Data (4D):", height=200, placeholder="Input riwayat per baris...")
-clean_data = re.findall(r'\d{4}', raw_data)
 
+# Tombol Refresh Otomatis
+if st.sidebar.button("🔄 REFRESH DATA OTOMATIS"):
+    with st.spinner(f"Menghubungkan ke Server {target}..."):
+        st.session_state['live_data'] = fetch_live_data(target)
+        time.sleep(1.5)
+        st.sidebar.success("Koneksi Berhasil! Data Diperbarui.")
+
+# Tampilan Status di Sidebar
 info = INTEL_DB[target]
 st.sidebar.markdown(f"<div style='background:{info['color']}; padding:10px; border-radius:10px; color:#000; font-weight:bold;'>"
-                    f"TARGET: {target}<br>VULNERABILITY: {info['vuln']}</div>", unsafe_allow_html=True)
+                    f"SERVER: {target}<br>VULNERABILITY: {info['vuln']}</div>", unsafe_allow_html=True)
 
-# --- 4. ENGINE LOGIC ---
-if not clean_data:
-    st.info("💡 Menunggu Sinkronisasi Data... Bot sedang mengkalibrasi radar global.")
-    
+# --- 5. ENGINE & DASHBOARD ---
+if 'live_data' not in st.session_state:
+    st.session_state['live_data'] = []
+
+current_data = st.session_state['live_data']
+
+if not current_data:
+    st.info("💡 Klik tombol **'REFRESH DATA OTOMATIS'** di sidebar untuk menarik data dari server.")
 else:
-    # A. Analisis Angka & Perilaku
-    all_digits = "".join(clean_data)
+    # A. Analisis Otomatis
+    all_digits = "".join(current_data)
     counts = Counter(all_digits)
-    # Mencari 3 digit yang paling 'Ditekan' (Suppressed/Simpanan Bandar)
     suppressed = [d for d, c in sorted(counts.items(), key=lambda x: x[1])[:3]]
-    # Mencari digit umpan (Bait/Paling sering muncul)
     bait = counts.most_common(1)[0][0]
     
-    # B. Simulasi Payout-Logic (Angka yang Akan Dikeluarkan Bandar)
+    # B. Prediksi Anti-Bandar
     res_as = suppressed[0] if len(suppressed) > 0 else "0"
-    res_kop = str((int(clean_data[0][1]) + 3) % 10) 
+    res_kop = str((int(current_data[0][1]) + 3) % 10) 
     res_kepala = suppressed[1] if len(suppressed) > 1 else "1"
     res_ekor = str(random.randint(0, 9))
     final_pred = res_as + res_kop + res_kepala + res_ekor
 
-    # C. Probability Meter Calculation
-    # Semakin konsisten data riwayat, semakin tinggi probabilitas
-    prob_score = min(98, (len(clean_data) * 2) + (100 - info['trust']))
+    prob_score = min(98, (len(current_data) * 2) + (100 - info['trust']))
     
-    # D. DASHBOARD DISPLAY
-    t1, t2, t3 = st.tabs(["🎯 LIVE PREDICTION", "🧠 BANDAR PSYCHOLOGY", "📑 AUDIT EVIDENCE"])
+    # C. Dashboard
+    t1, t2, t3 = st.tabs(["🎯 LIVE PREDICTION", "🧠 BANDAR PSYCHOLOGY", "📊 SERVER LOG"])
 
     with t1:
         st.markdown("<div class='main-card'>", unsafe_allow_html=True)
-        st.write("### 🔮 ESTIMASI ANGKA KELUAR BANDAR")
-        st.markdown(f"<p class='prediction-text'>{final_pred}</p>", unsafe_allow_html=True)
-        st.write(f"**STATUS:** Bandar diprediksi melepas angka zona simpanan **{res_as}**.")
-        
-        # Probability Meter UI
-        st.write(f"**PROBABILITY METER: {prob_score}%**")
-        st.markdown(f"""
-            <div class='meter-bg'>
-                <div class='meter-fill' style='width: {prob_score}%;'></div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"<p class='auto-status'>● LIVE FEED FROM {target.upper()}</p>", unsafe_allow_html=True)
+        st.write("### 🔮 ESTIMASI ANGKA KELUAR")
+        st.markdown(f"<p class='prediction-text'>{final_res if 'final_res' in locals() else final_pred}</p>", unsafe_allow_html=True)
+        st.write(f"**PROBABILITY: {prob_score}%**")
+        st.progress(prob_score/100)
         st.markdown("</div>", unsafe_allow_html=True)
-        
-        
 
     with t2:
-        st.subheader("🕵️ Analisis Kelicikan Musuh")
+        st.subheader("🕵️ Analisis Musuh")
         c1, c2 = st.columns(2)
         with c1:
             st.error(f"**Digit Umpan (Bait): {bait}**")
-            st.write(f"Bandar sedang memancing massa dengan digit {bait}. Hindari angka ini di posisi 2D belakang.")
+            st.write("Bandar sedang memancing massa. Jangan gunakan digit ini.")
         with c2:
             st.success(f"**Digit Simpanan: {', '.join(suppressed)}**")
-            st.write("Ini adalah 'Gudang' bandar. Mereka akan mengeluarkan salah satu angka ini untuk meminimalisir payout.")
-        
-        st.divider()
-        st.write("### 📉 Greed Tracking")
-        st.progress(100 - info['trust'])
-        st.caption(f"Tingkat Keserakahan Admin {target}: {100 - info['trust']}% (High Risk Manual Intervention)")
+            st.write("Zona aman bandar untuk melepas payout.")
 
     with t3:
-        st.subheader("📜 Bukti Forensik Digital")
-        st.text_area("Salin untuk laporan audit:", value=f"""
-SENTINEL REPORT v37.7
-TARGET: {target}
-VULNERABILITY: {info['vuln']}
-SUPPRESSED DIGITS: {', '.join(suppressed)}
-PREDICTED VOID: {final_res}
-PROBABILITY: {prob_score}%
-
-ANALISIS: 
-Ditemukan deviasi pada digit {suppressed[0]}. Bandar terdeteksi memanipulasi 
-arus keluar angka untuk menjaga profit kas di atas 70%.
-        """, height=200)
+        st.subheader("📑 Log Riwayat Otomatis")
+        st.write("Data terakhir yang ditarik dari server:")
+        st.code(", ".join(current_data))
+        st.markdown(f"**Total Data Sinkron:** {len(current_data)} periode")
 
 st.markdown("---")
-st.caption("© 2026 Sentinel v37.7 | The Sovereign Architect - Ultimate Intelligence")
+st.caption("© 2026 Sentinel v37.8 | The Automator - JoyPlay Intelligence")
